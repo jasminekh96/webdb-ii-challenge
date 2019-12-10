@@ -39,4 +39,36 @@ router.post('/', (req, res) => {
 		});
 });
 
+router.put('/:id', (req, res) => {
+	const { id } = req.params;
+	const changes = req.body;
+	db('cars')
+		.where({ id: id })
+		.update(changes)
+		.then((count) => {
+			res.status(200).json({ message: `${count} record(s) updated` });
+		})
+		.catch((error) => {
+			console.log(error);
+			res.status(500).json({ errorMessage: 'error updating records' });
+		});
+});
+
+router.delete('/:id', (req, res) => {
+	db('cars')
+		.where({ id: req.params.id })
+		.del()
+		.then((count) => {
+			if (count > 0) {
+				res.status(200).json({ message: `${count} record(s) deleted` });
+			} else {
+				res.status(404).json({ message: 'id does not exist' });
+			}
+		})
+		.catch((error) => {
+			console.log(error);
+			res.status(500).json({ errorMessage: 'could not delete the car' });
+		});
+});
+
 module.exports = router;
